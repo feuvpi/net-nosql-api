@@ -1,5 +1,4 @@
-﻿using api_reservas.Controllers.BaseController;
-using api_reservas.Core.Models;
+﻿using api_reservas.Core.Models;
 using api_reservas.Services;
 using Microsoft.AspNetCore.Mvc;
 

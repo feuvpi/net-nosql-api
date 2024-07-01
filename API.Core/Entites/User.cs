@@ -2,14 +2,13 @@
 using api_reservas.Core.Dtos;
 using api_reservas.Core.Models.BaseModels;
 
-
 namespace api_reservas.Core.Models
 {
-    public class Usuario : BaseEntity
+    public class User : BaseEntity
     {
         private string _password;
-        public Usuario() { }
-        public Usuario(CreateUserDTO novoUsuario)
+        public User() { }
+        public User(CreateUserDTO novoUsuario)
         {
             Name = novoUsuario.Nome;
             Email = novoUsuario.Email;
@@ -17,12 +16,14 @@ namespace api_reservas.Core.Models
             PasswordSalt = novoUsuario.PasswordSalt;
         }
 
-        [Required(ErrorMessage = "O Nome é Obrigatório")]
-        [MaxLength(50, ErrorMessage = "O tamanho não pode exceder 50 caracteres")]
+        [Required(ErrorMessage = "You need to have a name")]
+        [MaxLength(50, ErrorMessage = "It cant exceed 50 characteres")]
         public string Name { get; set; }
         public string Email { get; set; }
+        public string MobileNumber { get; set; }
         public string Password { get; set; }
         public string PasswordSalt { get; set; }
+
         //public string Cnpj { get; set; }
         //public string Cpf { get; set; }
         //public bool IsCondominio { get; set; }

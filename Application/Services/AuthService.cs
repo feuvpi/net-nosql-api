@@ -120,7 +120,7 @@ namespace api_reservas.Services
                 var userId = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var isCondominio = bool.Parse(principal.FindFirst(ClaimTypes.Actor).Value);
 
-                return new GetMeResponseDto { Id = userId, IsCondominio = isCondominio };
+                return new GetMeResponseDto { Id = userId };
             }
             catch (Exception ex)
             {

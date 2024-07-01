@@ -1,14 +1,8 @@
 ﻿using api_reservas.Core.Dtos;
-using api_reservas.Core.Models.BaseModels;
 using api_reservas.Core.Models.Config;
 using api_reservas.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace api_reservas.Controllers
 {
@@ -69,9 +63,6 @@ namespace api_reservas.Controllers
             return Ok(user);
         }
     }
-
-
-
 
     //public async Task<bool> UserExists(string email)
     //{
