@@ -3,9 +3,9 @@ using Infrastructure.Repository;
 
 namespace api_reservas.Services
 {
-    public class ReservaService : BaseService<Reserva>
+    public class ListingService : BaseService<Listing>
     {
-        public ReservaService(MyMongoRepository repository) : base(repository)
+        public ListingService(MyMongoRepository repository) : base(repository)
         {
 
         }

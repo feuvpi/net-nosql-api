@@ -11,15 +11,12 @@ namespace api_reservas.Services
 {
     public class AuthService : IAuthenticate
     {
-        private CondominoService _condominoService;
-        private CondominioService _condominioService;
+
         private UserService _userService;
         
 
-        public AuthService(CondominioService condominioService, CondominoService condominoService, UserService userService) 
+        public AuthService(UserService userService) 
         { 
-            _condominioService = condominioService;
-            _condominoService = condominoService;
             _userService = userService;
         }
         public async Task<LoginResponseDto> Login(LoginDto loginDTO, JwtSettings _jwtSettings)
@@ -36,7 +33,6 @@ namespace api_reservas.Services
             var response = new LoginResponseDto
             {
                 Token = token,
-                IsCondominio = user.IsCondominio,
                 Id = user.Id
             };
 
@@ -52,38 +48,18 @@ namespace api_reservas.Services
                 var user = await _userService.FindByEmail(newUser.Email);
                 if (user != null) throw new Exception("Email already in use.");
 
-                if (newUser.isCondominio)
-                {
-                    var condominioCnpjCheck = await _condominioService.FindByCnpj(newUser.Cnpj);
-                    if (condominioCnpjCheck != null) throw new Exception("Cnpj already in use.");
-                } else
-                {
-                    var condominoCnpjCheck = await _condominoService.FindByCpf(newUser.Cpf);
-                    if (condominoCnpjCheck != null) throw new Exception("Cpf already in use.");
-                }
-
                 // -- create new user
                 Usuario createUser = new Usuario(newUser);
                 var newUserId = await _userService.CreateAsync(createUser);   
 
                 if(string.IsNullOrEmpty(newUserId.ToString())) throw new Exception("Database is unavailable. Please contact support.");
                 createUser.Id = newUserId.ToString();
-                // -- create new model for user
-                if (newUser.isCondominio)
-                {
-                    Condominio newCondominio = new Condominio(createUser);
-                    await _condominioService.CreateAsync(newCondominio);
-                } else
-                {
-                    Condomino newCondomino = new Condomino(createUser);
-                    await _condominoService.CreateAsync(newCondomino);
-                }
+
                 // -- Uma colecao apenas, Usuario, que tera dentro dele o objeto condomino/condominio
                 var token = GenerateToken(createUser, jwtSettings);
                 var response = new LoginResponseDto
                 {
                     Token = token,
-                    IsCondominio = createUser.IsCondominio,
                     Id = createUser.Id
                 };
                 
@@ -101,7 +77,7 @@ namespace api_reservas.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Actor, user.IsCondominio.ToString()),
+                //new Claim(ClaimTypes.Actor, user.Funcao.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
