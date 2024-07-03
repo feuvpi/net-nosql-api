@@ -1,4 +1,5 @@
 using api_reservas.Core.Models.Config;
+using api_reservas.Middleware;
 using api_reservas.Services;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,6 +82,9 @@ builder.Services.AddCors(x => x.AddPolicy("CorsPolicy", builder =>
 var jwtKey = builder.Configuration["Jwt:Key"];
 
 var app = builder.Build();
+
+// Use rate limiting middleware
+app.UseRateLimitingMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

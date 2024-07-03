@@ -8,15 +8,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0E75AE9-A7F0-4BB9-B900-F90EBE73108D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{4989DA70-7D5F-4611-999C-694068BDF77D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "API.Core\Core.csproj", "{6EA5594A-8106-4F6E-9F67-B55864EE6A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "API.Core\Core.csproj", "{6EA5594A-8106-4F6E-9F67-B55864EE6A68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{100AA974-3584-4D2E-B03B-D4DC2B55A209}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{100AA974-3584-4D2E-B03B-D4DC2B55A209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{BBDD09C6-BBDF-4501-98D9-90E1DEC242EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{BBDD09C6-BBDF-4501-98D9-90E1DEC242EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
