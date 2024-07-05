@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,13 @@ builder.Services.AddSingleton<MyMongoRepository>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<ListingService>();
+builder.Services.AddSingleton<ClientRateLimiter>(new ClientRateLimiter(new TokenBucketRateLimiterOptions
+{
+    TokenLimit = 100,
+    TokensPerPeriod = 10,
+    ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+    AutoReplenishment = true
+}));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {

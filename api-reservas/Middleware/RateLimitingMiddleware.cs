@@ -6,29 +6,19 @@ namespace api_reservas.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly ClientRateLimiter _rateLimiter;
+        private readonly ILogger<RateLimitingMiddleware> _logger;
 
-        public RateLimitingMiddleware(RequestDelegate next, ClientRateLimiter rateLimiter)
+        public RateLimitingMiddleware(RequestDelegate next, ClientRateLimiter rateLimiter, ILogger<RateLimitingMiddleware> logger)
         {
             _next = next;
             _rateLimiter = rateLimiter;
+            _logger = logger;
         }
 
-        //public RateLimitingMiddleware(RequestDelegate next)
-        //{
-        //    _next = next;
-        //    _rateLimiter = new TokenBucketRateLimiter(new TokenBucketRateLimiterOptions
-        //    {
-        //        TokenLimit = 100, // -- Maximum tokens in the bucket
-        //        TokensPerPeriod = 10, // -- Tokens added per period
-        //        ReplenishmentPeriod = TimeSpan.FromMinutes(1), // -- Replenishment period
-        //        AutoReplenishment = true
-        //    });
-        //}
 
         public async Task InvokeAsync(HttpContext context)
         {
             var clientIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-            // Acquire one token (one permit) from the rate limiter
             var result = await _rateLimiter.AcquireAsync(clientIp, 1);
 
             if (result.IsAcquired)
@@ -38,8 +28,28 @@ namespace api_reservas.Middleware
             else
             {
                 context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                context.Response.OnStarting(() =>
+                {
+                    if (!context.Response.HasStarted)
+                    {
+                        // Extrai a duração recomendada para Retry-After
+                        var retryAfterDuration = GetRetryAfterDuration(result);
+                        context.Response.Headers.RetryAfter = retryAfterDuration.ToString();
+                    }
+
+                    return Task.CompletedTask;
+                });
+
+                _logger.LogWarning($"Rate limit exceeded for IP address: {clientIp}");
                 await context.Response.WriteAsync("Too many requests. Please try again later.");
             }
+        }
+
+        private TimeSpan GetRetryAfterDuration(RateLimitLease lease)
+        {
+            var metadata = lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter) ? retryAfter : TimeSpan.Zero;
+            return metadata;
         }
     }
 
